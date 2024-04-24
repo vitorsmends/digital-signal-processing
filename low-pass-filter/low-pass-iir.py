@@ -1,14 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.signal import firwin, lfilter
+from scipy.signal import iirfilter, lfilter
 from pydub import AudioSegment
 
-def apply_lowpass_filter(signal, cutoff_freq, sample_rate, filter_order=100):
+def apply_lowpass_filter(signal, cutoff_freq, sample_rate, filter_order=4):
     nyquist_rate = sample_rate / 2
     normalized_cutoff_freq = cutoff_freq / nyquist_rate
-    taps = firwin(filter_order, normalized_cutoff_freq, window='hamming')
-    filtered_signal = lfilter(taps, 1.0, signal)
-    return filtered_signal.astype(np.int16), taps
+    b, a = iirfilter(filter_order, normalized_cutoff_freq, btype='low', analog=False, ftype='butter')
+    filtered_signal = lfilter(b, a, signal)
+    return filtered_signal.astype(np.int16), b, a
 
 def plot_signal_and_fft(input_signal, output_signal, sample_rate, title):
     plt.figure(figsize=(12, 6))
@@ -44,13 +44,13 @@ def plot_signal_and_fft(input_signal, output_signal, sample_rate, title):
     plt.tight_layout()
     plt.show()
 
-def apply_lowpass_filter_to_audio_file(input_file, output_file, cutoff_freq, filter_order=100):
+def apply_lowpass_filter_to_audio_file(input_file, output_file, cutoff_freq, filter_order=4):
     audio = AudioSegment.from_file(input_file)
     sample_width = audio.sample_width
     sample_rate = audio.frame_rate
     channels = audio.channels
     signal = np.array(audio.get_array_of_samples())
-    filtered_signal, taps = apply_lowpass_filter(signal, cutoff_freq, sample_rate, filter_order)
+    filtered_signal, b, a = apply_lowpass_filter(signal, cutoff_freq, sample_rate, filter_order)
     plot_signal_and_fft(signal, filtered_signal, sample_rate, "Input/Output")
     filtered_audio = AudioSegment(filtered_signal.tobytes(), 
                                   frame_rate=sample_rate,
@@ -60,8 +60,8 @@ def apply_lowpass_filter_to_audio_file(input_file, output_file, cutoff_freq, fil
 
 # Example usage
 input_file = "./input-data/input.mp3"
-output_file = "./output-data/output_lowpass.mp3"
+output_file = "./output-data/output_lowpass_iir.mp3"
 cutoff_freq = 1000  # Adjust cutoff frequency as needed
-filter_order = 1000  # Adjust filter order as needed
+filter_order = 4  # Adjust filter order as needed
 
 apply_lowpass_filter_to_audio_file(input_file, output_file, cutoff_freq, filter_order)
