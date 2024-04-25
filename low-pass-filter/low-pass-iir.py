@@ -61,7 +61,7 @@ def apply_lowpass_filter_to_audio_file(input_file, output_file, cutoff_freq, fil
 # Example usage
 input_file = "./input-data/input.mp3"
 output_file = "./output-data/output_lowpass_iir.mp3"
-cutoff_freq = 1000  # Adjust cutoff frequency as needed
+cutoff_freq = 250  # Adjust cutoff frequency as needed
 filter_order = 4  # Adjust filter order as needed
 
 apply_lowpass_filter_to_audio_file(input_file, output_file, cutoff_freq, filter_order)
