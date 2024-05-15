@@ -16,7 +16,7 @@ def plot_signal_and_fft(input_signal, output_signal, sample_rate, title):
     time = np.arange(len(input_signal)) / sample_rate
     
     # Plot input signal
-    plt.subplot(2, 1, 1)
+    # plt.subplot(2, 1, 1)
     plt.plot(time, input_signal, label='Input Signal')
     plt.plot(time, output_signal, label='Output Signal')
     plt.title(title + ' - Temporal Signal')
@@ -24,24 +24,6 @@ def plot_signal_and_fft(input_signal, output_signal, sample_rate, title):
     plt.ylabel('Amplitude')
     plt.legend()
     
-    # Calculate FFT for input signal
-    fft_input_signal = np.fft.fft(input_signal)
-    freqs = np.fft.fftfreq(len(input_signal), d=1/sample_rate)
-    
-    # Plot FFT for input signal
-    plt.subplot(2, 1, 2)
-    plt.plot(freqs[:len(freqs)//2], np.abs(fft_input_signal)[:len(freqs)//2], label='Input Signal')
-    
-    # Calculate FFT for output signal
-    fft_output_signal = np.fft.fft(output_signal)
-    
-    # Plot FFT for output signal
-    plt.plot(freqs[:len(freqs)//2], np.abs(fft_output_signal)[:len(freqs)//2], label='Output Signal')
-    
-    plt.title(title + ' - FFT')
-    plt.xlabel('Frequency (Hz)')
-    plt.ylabel('Magnitude')
-    plt.legend()
     plt.tight_layout()
     plt.show()
 
